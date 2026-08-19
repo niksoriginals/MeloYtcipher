@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 /*
  * MeloYtcipher config updater
- * ---------------------------------
- * Jab YouTube naya player JS roll out karta hai aur playback 403/"Source error"
- * deta hai, ye script current player se sig/n function extract karke
- * player_configs.json update karta hai. APK rebuild ki zaroorat nahi.
+ * ----------------------------------------------------------------------------
+ * When YouTube rolls out a new player and playback breaks with 403 / "Source
+ * error", this tool extracts the current signature and n-transform functions
+ * from the live player and updates player_configs.json. No APK rebuild is
+ * needed — the app picks the change up remotely.
  *
  * Usage:
- *   node tools/update_configs.mjs              # live: YouTube se fetch karke update
- *   node tools/update_configs.mjs --offline <path-to-base.js>   # locally saved player JS
- *   node tools/update_configs.mjs --check      # sirf report: current config OK hai ya nahi
+ *   node tools/update_configs.mjs                                # live update
+ *   node tools/update_configs.mjs --offline <path-to-base.js>    # analyze a saved player JS
+ *   node tools/update_configs.mjs --check                        # coverage report only
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -37,7 +38,7 @@ async function fetchText(url, retries = 3) {
 function extractPlayerHash(iframeApi) {
   const unescaped = iframeApi.replace(/\\\//g, "/");
   const m = unescaped.match(/\/s\/player\/([a-f0-9]{8})\//);
-  if (!m) throw new Error("player hash iframe_api mein nahi mila");
+  if (!m) throw new Error("could not resolve player hash from iframe_api");
   return m[1];
 }
 
@@ -91,14 +92,14 @@ function browserSandbox() {
 function evalPlayer(playerJs) {
   const closing = "})(_yt_player);";
   const idx = playerJs.lastIndexOf(closing);
-  if (idx === -1) throw new Error("player closure tail nahi mila (player JS format badla hua hai)");
+  if (idx === -1) throw new Error("player closure tail not found — the player JS layout may have changed");
   const injected =
     "g.__export=function(){return {pB:typeof pB!=='undefined'?pB:null,JQ:typeof JQ!=='undefined'?JQ:null,cY:g.cY||null};};";
   const patched = playerJs.slice(0, idx) + injected + playerJs.slice(idx);
   const sandbox = browserSandbox();
   vm.runInNewContext(patched, sandbox, { timeout: 30000 });
   const ex = sandbox._yt_player && sandbox._yt_player.__export && sandbox._yt_player.__export();
-  if (!ex) throw new Error("export injection fail hui");
+  if (!ex) throw new Error("export injection failed");
   return ex;
 }
 
@@ -112,12 +113,12 @@ const STS_RE = /sts\s*[:=]\s*"?(\d+)/;
 
 function analyze(playerJs) {
   const stsMatch = playerJs.match(STS_RE);
-  if (!stsMatch) throw new Error("sts timestamp player JS mein nahi mila");
+  if (!stsMatch) throw new Error("could not find the sts timestamp in the player JS");
   const sts = Number(stsMatch[1]);
 
   const ex = evalPlayer(playerJs);
   if (typeof ex.JQ !== "function" && typeof ex.pB !== "function") {
-    throw new Error("player JS evaluate hua par sig functions expose nahi hue (structure badla)");
+    throw new Error("player JS evaluated, but signature functions were not exposed");
   }
 
   const testStrings = ["hello+world%21", "a%20b+c", "%E2%82%ACx", "ABC_123.-~"];
@@ -144,7 +145,7 @@ function analyze(playerJs) {
       break;
     }
   }
-  if (!sigSpec) throw new Error("sig function verify nahi hui (structure badla)");
+  if (!sigSpec) throw new Error("could not verify the signature function — the player layout may have changed");
 
   let nClass = null;
   for (const re of NCLASS_RES) {
@@ -154,7 +155,7 @@ function analyze(playerJs) {
       break;
     }
   }
-  if (!nClass) throw new Error("n-class name nahi mila (structure badla)");
+  if (!nClass) throw new Error("could not locate the n-transform class — the player layout may have changed");
 
   let nVerified = false;
   if (typeof ex.cY === "function") {
@@ -163,7 +164,7 @@ function analyze(playerJs) {
       nVerified = typeof out === "string" && out !== "abc123xyz";
     } catch { /* ignore */ }
   }
-  if (!nVerified) throw new Error("n-transform runtime verify nahi hui (structure badla)");
+  if (!nVerified) throw new Error("n-transform runtime verification failed — the player layout may have changed");
 
   return { sts, sigSpec, nClass, verifiedInner };
 }
@@ -189,9 +190,9 @@ function updateConfig(hash, analysis) {
       if (!aliases.includes(hash) && existingHash !== hash) {
         existing.aliases = [...aliases, hash];
         fs.writeFileSync(CONFIG_FILE, JSON.stringify(root, null, 2) + "\n");
-        console.log(`\nEntry "${existingHash}" mein hash "${hash}" alias ke taur pe ADD ho gaya.`);
+        console.log(`\nAdded "${hash}" as an alias of entry "${existingHash}".`);
       } else {
-        console.log(`\nHash "${hash}" already covered hai (entry "${existingHash}", alias ke taur pe). Kuch change nahi.`);
+        console.log(`\nHash "${hash}" is already covered (alias of "${existingHash}"). No changes.`);
       }
       return;
     }
@@ -200,7 +201,7 @@ function updateConfig(hash, analysis) {
   const entry = { sig: analysis.sigSpec, nClass: analysis.nClass, sts: analysis.sts, aliases: [] };
   root.players = sortedInsert(players, hash, entry);
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(root, null, 2) + "\n");
-  console.log(`\nNaya entry add hua: "${hash}" -> ${JSON.stringify(entry)}`);
+  console.log(`\nAdded new entry "${hash}": ${JSON.stringify(entry)}`);
 }
 
 function covered(hash) {
@@ -222,48 +223,48 @@ async function main() {
     playerJs = fs.readFileSync(file, "utf8");
     const m = playerJs.match(/player\/([a-f0-9]{8})\//);
     hash = m ? m[1] : "offline-" + Math.random().toString(16).slice(2, 10);
-    console.log(`Offline mode: ${file} (hash guess: ${hash})`);
+    console.log(`Offline mode: ${file} (hash: ${hash})`);
   } else {
-    console.log("iframe_api se current player hash le raha hoon...");
+    console.log("Resolving current player hash from iframe_api...");
     const iframeApi = await fetchText("https://www.youtube.com/iframe_api");
     hash = extractPlayerHash(iframeApi);
     console.log(`Current player hash: ${hash}`);
     playerJs = await fetchText(`https://www.youtube.com/s/player/${hash}/player_ias.vflset/en_GB/base.js`);
-    console.log(`base.js download hua (${(playerJs.length / 1024).toFixed(0)} KB)`);
+    console.log(`Downloaded base.js (${(playerJs.length / 1024).toFixed(0)} KB)`);
   }
 
   if (args.includes("--check")) {
     const owner = covered(hash);
     console.log(
       owner
-        ? `Status: hash "${hash}" config mein covered hai (entry "${owner}"). Playback issues iski wajah se nahi hain.`
-        : `Status: hash "${hash}" config mein NAHI hai! Apne signatures ke liye naya entry chahiye. Script bina --check ke chalao.`
+        ? `Status: hash "${hash}" is already covered (entry "${owner}").`
+        : `Status: hash "${hash}" is NOT covered — a new entry is required. Run the script without --check.`
     );
     return;
   }
 
-  console.log("Sig/n functions extract + verify ho rahe hain (Node sandbox)...");
+  console.log("Extracting and verifying sig/n functions (Node sandbox)...");
   const analysis = analyze(playerJs);
   console.log(`sts=${analysis.sts}, sig=${analysis.sigSpec}, nClass=${analysis.nClass}`);
-  console.log(`inner verify: ${analysis.verifiedInner}`);
+  console.log(`verified: ${analysis.verifiedInner}`);
 
   const existing = covered(hash);
   if (existing && !offlineIdx) {
-    console.log(`Hash "${hash}" pehle se covered hai (entry "${existing}"). Done.`);
+    console.log(`Hash "${hash}" is already covered (entry "${existing}"). Done.`);
     return;
   }
 
   updateConfig(hash, analysis);
-  console.log("\nAbh bas ye push kar do:");
+  console.log("\nPush the change:");
   console.log("  git add player_configs.json");
   console.log("  git commit -m 'Add player config for " + hash + "'");
   console.log("  git push");
-  console.log("Ya GitHub UI se player_configs.json edit karke Commit kar do.");
-  console.log("App 6h ke andar ya agle 403 pe turant config refresh karega — APK rebuild NAHI karni.");
+  console.log("Alternatively, edit player_configs.json directly on GitHub and commit.");
+  console.log("The app picks the change up within 6h, or immediately on the next 403. No APK rebuild required.");
 }
 
 main().catch((e) => {
   console.error("\nFAILED:", e.message);
-  console.error("Structure change ho sakta hai — log + base.js sample ke saath help lo.");
+  console.error("The player structure may have changed — collect this log and a base.js sample and open an issue.");
   process.exit(1);
 });
