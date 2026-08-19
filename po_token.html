@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>po_token</title>
+<script type="text/javascript">
+// BotGuard / poToken minting harness for PoTokenWebView.kt.
+//
+// Ported from LuanRT/BgUtils (MIT) via NewPipe's po_token.html, adapted to the
+// split minter API this app's Kotlin side drives:
+//
+//   1. runBotGuard(challengeData)                     -> {webPoSignalOutput, botguardResponse}
+//   2. createPoTokenMinter(webPoSignalOutput, token)  -> caches the mint callback
+//   3. obtainPoToken(u8Identifier)                    -> Uint8Array
+//
+// Step 2 is kept separate from step 3 on purpose: PoTokenGenerator mints twice
+// off one integrity token (once for the session id, once for the video id), so
+// the minter has to outlive a single call.
+//
+// Deliberately NOT in strict mode. PoTokenWebView evaluates snippets that stash
+// state via `this.webPoSignalOutput = ...` from inside a promise callback, which
+// only reaches `window` under sloppy-mode this-coercion.
+//
+// Every definition must stay ahead of this block's closing tag: the Kotlin side
+// splices its bootstrap call in immediately before the first one in the file.
+// Written as ES5 + Promise (no async/await) to match minSdk 26's WebView floor.
+
+// Populated by the VM through vmFunctionsCallback, and by createPoTokenMinter.
+var botguardVm = null;
+var vmFunctions = null;
+var poTokenMinter = null;
+
+function resetVmFunctions() {
+    vmFunctions = {
+        asyncSnapshotFunction: null,
+        shutdownFunction: null,
+        passEventFunction: null,
+        checkCameraFunction: null
+    };
+}
+resetVmFunctions();
+
+// Hands the program to the VM and waits until it calls us back with its
+// function table. Resolves once asyncSnapshotFunction is usable.
+function loadBotGuard(challengeData) {
+    resetVmFunctions();
+
+    botguardVm = window[challengeData.globalName];
+    if (!botguardVm) {
+        throw new Error("[BotGuardClient]: VM not found in the global object");
+    }
+    if (!botguardVm.a) {
+        throw new Error("[BotGuardClient]: Could not load program");
+    }
+
+    var vmFunctionsCallback = function (
+        asyncSnapshotFunction, shutdownFunction, passEventFunction, checkCameraFunction
+    ) {
+        vmFunctions = {
+            asyncSnapshotFunction: asyncSnapshotFunction,
+            shutdownFunction: shutdownFunction,
+            passEventFunction: passEventFunction,
+            checkCameraFunction: checkCameraFunction
+        };
+    };
+
+    // vm.a's arity has drifted across BotGuard revisions. Try the current
+    // 6-argument form, and fall back to the older 5-argument one if that shape
+    // is rejected outright. Only retry while nothing has been registered yet,
+    // so a fallback can never double-register the function table.
+    var loadResult;
+    try {
+        loadResult = botguardVm.a(
+            challengeData.program, vmFunctionsCallback, true, undefined, function () {}, [[], []]
+        );
+    } catch (e) {
+        if (vmFunctions.asyncSnapshotFunction) {
+            throw e;
+        }
+        loadResult = botguardVm.a(
+            challengeData.program, vmFunctionsCallback, true, undefined, function () {}
+        );
+    }
+
+    // vm.a may return a promise, the sync snapshot function, or nothing at all
+    // depending on revision; Promise.resolve absorbs all three.
+    return Promise.resolve(loadResult).then(function () {
+        if (vmFunctions.asyncSnapshotFunction) {
+            return;
+        }
+        // The VM populates its function table off its own background work, so
+        // yield and poll rather than assuming it is ready when vm.a settles.
+        return new Promise(function (resolve, reject) {
+            var waited = 0;
+            var handle = setInterval(function () {
+                waited++;
+                if (vmFunctions.asyncSnapshotFunction) {
+                    clearInterval(handle);
+                    resolve();
+                } else if (waited > 10000) {
+                    clearInterval(handle);
+                    reject(new Error("[BotGuardClient]: asyncSnapshotFunction is not available"));
+                }
+            }, 1);
+        });
+    });
+}
+
+// args: {contentBinding, signedTimestamp, webPoSignalOutput, skipPrivacyBuffer}
+// All four are optional; webPoSignalOutput is the array the VM fills in with the
+// minter factory, which is the only field this app actually needs back.
+function snapshot(args) {
+    return new Promise(function (resolve, reject) {
+        if (!vmFunctions.asyncSnapshotFunction) {
+            reject(new Error("[BotGuardClient]: Async snapshot function not found"));
+            return;
+        }
+        try {
+            vmFunctions.asyncSnapshotFunction(
+                function (response) { resolve(response); },
+                [
+                    args.contentBinding,
+                    args.signedTimestamp,
+                    args.webPoSignalOutput,
+                    args.skipPrivacyBuffer
+                ]
+            );
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
+
+// Entry point: evaluates the interpreter shipped in the challenge, runs it, and
+// returns both the response to POST to /GenerateIT and the signal output that
+// createPoTokenMinter needs afterwards.
+function runBotGuard(challengeData) {
+    var interpreterJavascript =
+        challengeData.interpreterJavascript.privateDoNotAccessOrElseSafeScriptWrappedValue;
+
+    if (!interpreterJavascript) {
+        // The TrustedResourceUrl variant would need a network fetch, and this
+        // WebView runs with blockNetworkLoads = true.
+        return Promise.reject(new Error("[BotGuardClient]: Could not load VM"));
+    }
+
+    return Promise.resolve()
+        .then(function () {
+            new Function(interpreterJavascript)();
+            return loadBotGuard(challengeData);
+        })
+        .then(function () {
+            var webPoSignalOutput = [];
+            return snapshot({ webPoSignalOutput: webPoSignalOutput })
+                .then(function (botguardResponse) {
+                    return {
+                        webPoSignalOutput: webPoSignalOutput,
+                        botguardResponse: botguardResponse
+                    };
+                });
+        });
+}
+
+// Exchanges the integrity token for a mint callback and caches it for reuse.
+function createPoTokenMinter(webPoSignalOutput, integrityToken) {
+    return Promise.resolve()
+        .then(function () {
+            var getMinter = webPoSignalOutput[0];
+            if (!getMinter) {
+                throw new Error("PMD:Undefined");
+            }
+            return getMinter(integrityToken);
+        })
+        .then(function (mintCallback) {
+            if (!mintCallback) {
+                throw new Error("YNJ:Undefined");
+            }
+            if (typeof mintCallback !== "function") {
+                throw new Error("APF:Failed");
+            }
+            poTokenMinter = mintCallback;
+        });
+}
+
+// identifier is a Uint8Array (the session id or video id, utf-8 encoded).
+function obtainPoToken(identifier) {
+    return Promise.resolve()
+        .then(function () {
+            if (!poTokenMinter) {
+                throw new Error("[PoToken]: minter has not been created yet");
+            }
+            return poTokenMinter(identifier);
+        })
+        .then(function (result) {
+            if (!result) {
+                throw new Error("ODM:Undefined");
+            }
+            if (!(result instanceof Uint8Array)) {
+                throw new Error("[PoToken]: minted poToken is not a Uint8Array");
+            }
+            return result;
+        });
+}
+</script>
+</head>
+<body></body>
+</html>
