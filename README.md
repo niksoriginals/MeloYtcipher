@@ -2,16 +2,28 @@
 
 Remote configuration registry for the **Melo** music player. This repository
 holds the runtime-adjustable playback configuration so that YouTube player
-rotations can be fixed **without shipping a new APK**.
+rotations are fixed **automatically without shipping a new APK**.
 
 ```
 MeloYtcipher/
+├── .github/workflows/
+│   └── player-monitor.yml     # Automated 30-minute live YouTube player scanner & auto-committer
 ├── player_configs.json        # player hash -> sig/n function specifications
 ├── po_token.html              # BotGuard bridge payload (rarely changes)
 ├── tools/
-│   └── update_configs.mjs     # automated config extractor + verifier
+│   ├── auto-update-monitor.mjs # 30-sample multi-surface scanner & updater
+│   └── update_configs.mjs     # manual config extractor + verifier
 └── README.md
 ```
+
+## ⚡ Automated 24/7 Monitoring & Self-Healing
+
+This repository has a built-in **GitHub Action (`player-monitor.yml`)** that runs **every 30 minutes**:
+1. Multi-samples live YouTube player surfaces (`iframe_api`, `music.youtube.com`, `watch`, `embed`) across multiple requests.
+2. Catches **A/B canary players** in their first hour before they become dominant.
+3. Automatically extracts `sigSpec`, `nClass`, `sts`, and MD5 aliases from YouTube's `base.js`.
+4. Updates `player_configs.json` and pushes the commit directly to `main`.
+5. **Melo apps self-heal automatically** without needing any manual intervention or APK rebuilds!
 
 ## How the app consumes this repo
 
@@ -24,64 +36,23 @@ playback never depends on network availability for config.
 | `player_configs.json` | `raw.githubusercontent.com/niksoriginals/MeloYtcipher/main/player_configs.json` | every 6h; forced immediately on a signature rejection |
 | `po_token.html` | `raw.githubusercontent.com/niksoriginals/MeloYtcipher/main/po_token.html` | every 24h |
 
-## When to update
+## Manual Update (CLI)
 
-Update this repository when playback breaks with `403` / `Source error` and the
-app log shows:
-
-```
-echomusic_CipherFnExtract: No config for hash: <hash>
-echomusic_CipherConfig: Remote config fetch HTTP 404
-```
-
-or when the check mode reports an uncovered hash (see below).
-
-## Updating the config
+If you ever want to run the scanner manually:
 
 **Requirements:** Node.js 18+
 
 ```bash
-# 1. Clone (once)
+# 1. Clone
 git clone https://github.com/niksoriginals/MeloYtcipher.git
 cd MeloYtcipher
 
-# 2. Check whether the live player is already covered
+# 2. Run multi-surface scanner & updater
+node tools/auto-update-monitor.mjs
+
+# 3. Or check specific player hash
 node tools/update_configs.mjs --check
-
-# 3. Update (only if the check reported an uncovered hash)
-node tools/update_configs.mjs
-
-# 4. Push
-git add player_configs.json
-git commit -m "Add player config for <hash>"
-git push
 ```
-
-The app picks up the change within 6 hours, or immediately on the next
-signature rejection. No APK rebuild is required.
-
-**No PC available?** Edit `player_configs.json` directly on GitHub and commit.
-Note that extracting the `sig`/`nClass` values still requires the tool —
-a player JS sample is needed to derive them.
-
-## How the updater works
-
-`tools/update_configs.mjs` is a self-verifying extractor:
-
-1. Resolves the current player hash from YouTube's `/iframe_api`.
-2. Downloads the matching `base.js`.
-3. Evaluates the player in a sandboxed Node VM (browser API stubs provided).
-4. Extracts the signature call site and verifies its inner function behaves
-   identically to `decodeURIComponent` against test vectors.
-5. Locates the `n` transform class and verifies it at runtime by transforming
-   a probe value.
-6. Extracts the `sts` timestamp.
-7. If an existing entry already matches (`sig` + `nClass` + `sts`), the new
-   hash is appended as an **alias**; otherwise a **new entry** is created.
-   Entries stay sorted by `sts`.
-
-An `--offline <path>` flag runs the same pipeline against a locally saved
-`base.js` when the download route is unavailable.
 
 ## Config schema
 
@@ -99,18 +70,5 @@ An `--offline <path>` flag runs the same pipeline against a locally saved
 }
 ```
 
-## FAQ
-
-- **When should `po_token.html` change?** Only when BotGuard rotates and
-  token minting fails (`PoTokenWebView` / `PoTokenAssetStore` errors in the
-  log). The bridge loads YouTube's BotGuard script at runtime, so it normally
-  never needs touching.
-- **When is an APK rebuild actually required?** Only when the app's own code
-  changes — a rare case. Every config-level fix lives in this repository.
-- **What if the updater reports a structure change?** The player's JS layout
-  has changed (signature scheme rotation, roughly once or twice a year). The
-  extractor must be adapted to the new layout — this is a developer task.
-
----
-
-Maintained by [niksoriginals](https://github.com/niksoriginals).
+## Maintained by
+[niksoriginals](https://github.com/niksoriginals)

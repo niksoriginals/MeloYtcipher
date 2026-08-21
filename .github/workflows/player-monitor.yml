@@ -1,0 +1,46 @@
+name: YouTube Player Monitor & Auto-Updater
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # Runs every 30 minutes
+  workflow_dispatch:        # Manual trigger
+
+concurrency:
+  group: player-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor-and-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Scan live YouTube player surfaces & auto-update configs
+        id: scan
+        run: |
+          node tools/auto-update-monitor.mjs
+
+      - name: Commit and push changes if updated
+        run: |
+          if [ -n "$(git status --porcelain player_configs.json)" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add player_configs.json
+            git commit -m "feat(configs): auto-update YouTube player configs [skip ci]"
+            git push origin main
+            echo "Successfully committed and pushed updated player_configs.json to main!"
+          else
+            echo "No changes in player_configs.json. All players up-to-date."
+          fi
