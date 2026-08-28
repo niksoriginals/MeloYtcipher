@@ -303,6 +303,7 @@
     "b1e9a19c": { "sig": "Ik(2,8129,INPUT)", "nClass": "sP", "sts": 20689, "aliases": ["fffb9364","6a0e84d6","bcaaa007"] },
     "659ae91c": { "sig": "vQ(29,4063,INPUT)", "nClass": "TW", "sts": 20690, "aliases": ["c655ea8b","41b902fa","0fededfe","06ab6907","5bb4f348"] },
     "bd4a2521": { "sig": "a3(29,4063,INPUT)", "nClass": "Ff", "sts": 20690, "aliases": ["6413e259","c281516d","5b955eaa","0a500c3a","a7f04134"] },
-    "fc043c93": { "sig": "xD(28,4062,INPUT)", "nClass": "n7", "sts": 20690, "aliases": ["560ac8b1"] }
+    "fc043c93": { "sig": "xD(28,4062,INPUT)", "nClass": "n7", "sts": 20690, "aliases": ["560ac8b1"] },
+    "4f12be8d": { "sig": "hO(12,7031,INPUT)", "nClass": "tO", "sts": 20692, "aliases": ["d74ef57a"] }
   }
 }
