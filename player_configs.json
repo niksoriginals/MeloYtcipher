@@ -306,6 +306,6 @@
     "fc043c93": { "sig": "xD(28,4062,INPUT)", "nClass": "n7", "sts": 20690, "aliases": ["560ac8b1"] },
     "4f12be8d": { "sig": "hO(12,7031,INPUT)", "nClass": "tO", "sts": 20692, "aliases": ["d74ef57a"] },
     "5d50ebf0": { "sig": "hg(16,7019,INPUT)", "nClass": "md", "sts": 20692, "aliases": ["39598de1"] },
-    "55da8b08": { "sig": "oP(47,1312,INPUT)", "nClass": "MK", "sts": 20693, "aliases": ["5fd9d177"] }
+    "55da8b08": { "sig": "oP(47,1312,INPUT)", "nClass": "MK", "sts": 20693, "aliases": ["5fd9d177","20382113","dabf4fd0"] }
   }
 }
