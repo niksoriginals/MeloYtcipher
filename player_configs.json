@@ -310,6 +310,7 @@
     "9470c977": { "sig": "Of(8,131,INPUT)", "nClass": "wO", "sts": 20696, "aliases": ["9f1ba9db"] },
     "f572e43c": { "sig": "rY(19,3017,INPUT)", "nClass": "um", "sts": 20697, "aliases": ["8d57721e"] },
     "1ceea3e8": { "sig": "WQ(14,8942,INPUT)", "nClass": "ty", "sts": 20698, "aliases": ["319fe431","259c7f44","c01ca9bc"] },
-    "10733253": { "sig": "dS(7,2166,INPUT)", "nClass": "np", "sts": 20699, "aliases": ["27a3833a"] }
+    "10733253": { "sig": "dS(7,2166,INPUT)", "nClass": "np", "sts": 20699, "aliases": ["27a3833a"] },
+    "ab18ea88": { "sig": "Df(7,6570,INPUT)", "nClass": "jm", "sts": 20700, "aliases": ["1ba7d311"] }
   }
 }
