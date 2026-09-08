@@ -313,6 +313,7 @@
     "10733253": { "sig": "dS(7,2166,INPUT)", "nClass": "np", "sts": 20699, "aliases": ["27a3833a"] },
     "ab18ea88": { "sig": "Df(7,6570,INPUT)", "nClass": "jm", "sts": 20700, "aliases": ["1ba7d311","1b29db7a","a41d7c8a"] },
     "b93b66db": { "sig": "QV(7,6570,INPUT)", "nClass": "M7", "sts": 20700, "aliases": ["488ab3ed"] },
-    "8c3fda2d": { "sig": "cW(16,7936,INPUT)", "nClass": "jZ", "sts": 20702, "aliases": ["e042e95d"] }
+    "8c3fda2d": { "sig": "cW(16,7936,INPUT)", "nClass": "jZ", "sts": 20702, "aliases": ["e042e95d"] },
+    "94877f3c": { "sig": "JY(2,6064,INPUT)", "nClass": "li", "sts": 20703, "aliases": ["f91571b4"] }
   }
 }
