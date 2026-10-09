@@ -354,6 +354,6 @@
     "7daa59ad": { "sig": "HD(40,5835,INPUT)", "nClass": "Tb", "sts": 20733, "aliases": ["8973b4ce"] },
     "de55d811": { "sig": "lF(41,5834,INPUT)", "nClass": "Ay", "sts": 20733, "aliases": ["1ed54fe5","ec429320"] },
     "73252d67": { "sig": "G9(7,6899,INPUT)", "nClass": "BG", "sts": 20734, "aliases": ["68f28071","a9596022"] },
-    "99afa6f1": { "sig": "Hw(7,6899,INPUT)", "nClass": "vF", "sts": 20734, "aliases": ["bb06c5fa"] }
+    "99afa6f1": { "sig": "Hw(7,6899,INPUT)", "nClass": "vF", "sts": 20734, "aliases": ["bb06c5fa","24c7e547"] }
   }
 }
