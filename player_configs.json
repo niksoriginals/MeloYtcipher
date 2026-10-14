@@ -360,6 +360,7 @@
     "22cb88bc": { "sig": "s8(53,5260,INPUT)", "nClass": "vA", "sts": 20737, "aliases": ["2cc02ffd"] },
     "21090930": { "sig": "RG(3,5455,INPUT)", "nClass": "xa", "sts": 20738, "aliases": ["d1e6e263"] },
     "4db0dd7d": { "sig": "Ya(3,5455,INPUT)", "nClass": "Pb", "sts": 20738, "aliases": ["e5b5c44d"] },
-    "5cdc404f": { "sig": "nD(3,5455,INPUT)", "nClass": "Di", "sts": 20738, "aliases": ["8c7aac80"] }
+    "5cdc404f": { "sig": "nD(3,5455,INPUT)", "nClass": "Di", "sts": 20738, "aliases": ["8c7aac80"] },
+    "8da84994": { "sig": "P1(17,1206,INPUT)", "nClass": "bB", "sts": 20739, "aliases": ["e071f443","0229cd64","8dfbe68b"] }
   }
 }
