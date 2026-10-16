@@ -365,6 +365,6 @@
     "c271e571": { "sig": "a0(72,7798,INPUT)", "nClass": "kq", "sts": 20740, "aliases": ["7b58401d","24299858","95d777dc"] },
     "0ed38f41": { "sig": "Sx(24,4432,INPUT)", "nClass": "dH", "sts": 20741, "aliases": ["1748cd0b"] },
     "e29a2e88": { "sig": "vL(25,4433,INPUT)", "nClass": "QI", "sts": 20741, "aliases": ["f44465e3","52726943","b6eda4df"] },
-    "4d596e5d": { "sig": "Le(9,1408,INPUT)", "nClass": "qt", "sts": 20742, "aliases": ["83f0e2d1"] }
+    "4d596e5d": { "sig": "Le(9,1408,INPUT)", "nClass": "qt", "sts": 20742, "aliases": ["83f0e2d1","ec8a4d33"] }
   }
 }
