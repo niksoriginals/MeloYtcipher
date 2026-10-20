@@ -367,6 +367,8 @@
     "e29a2e88": { "sig": "vL(25,4433,INPUT)", "nClass": "QI", "sts": 20741, "aliases": ["f44465e3","52726943","b6eda4df"] },
     "4d596e5d": { "sig": "Le(9,1408,INPUT)", "nClass": "qt", "sts": 20742, "aliases": ["83f0e2d1","ec8a4d33","a0385a48","6636507e"] },
     "67288f35": { "sig": "Ww(23,7069,INPUT)", "nClass": "Vw", "sts": 20744, "aliases": ["938ea829"] },
-    "0c08fd03": { "sig": "Ga(19,5120,INPUT)", "nClass": "Wh", "sts": 20745, "aliases": ["14c04b7e"] }
+    "0c08fd03": { "sig": "Ga(19,5120,INPUT)", "nClass": "Wh", "sts": 20745, "aliases": ["14c04b7e"] },
+    "55de7e60": { "sig": "zl(17,5122,INPUT)", "nClass": "Gx", "sts": 20745, "aliases": ["fd1e678e"] },
+    "5008be0a": { "sig": "Gl(17,1452,INPUT)", "nClass": "Fl", "sts": 20746, "aliases": ["09451b48"] }
   }
 }
