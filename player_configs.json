@@ -376,6 +376,7 @@
     "6b2fce74": { "sig": "zb(8,6467,INPUT)", "nClass": "yb", "sts": 20751, "aliases": ["4591528e"] },
     "096efeec": { "sig": "Ok(7,6007,INPUT)", "nClass": "Nx", "sts": 20752, "aliases": ["f8b08a10"] },
     "f312a968": { "sig": "ks(5,6005,INPUT)", "nClass": "zD", "sts": 20752, "aliases": ["171eb67c"] },
+    "950316ef": { "sig": "Qxa(2,2830,INPUT)", "nClass": "hq", "sts": 20753, "aliases": ["b5f7c4ff"] },
     "f29b1e87": { "sig": "Hm(1,2829,INPUT)", "nClass": "Xt", "sts": 20753, "aliases": ["b55ecf68","6eded988"] }
   }
 }
