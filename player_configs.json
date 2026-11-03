@@ -384,6 +384,7 @@
     "50558212": { "sig": "Fe(81,5354,INPUT)", "nClass": "Lm", "sts": 20755, "aliases": ["c3e008d9"] },
     "afc59c0c": { "sig": "Yo(4,6007,INPUT)", "nClass": "Xo", "sts": 20756, "aliases": ["7fed3dc1"] },
     "4a1e575f": { "sig": "bs(8,1901,INPUT)", "nClass": "Wq", "sts": 20758, "aliases": ["62cb45e2"] },
-    "3a026a7c": { "sig": "hr(57,7106,INPUT)", "nClass": "Eb", "sts": 20759, "aliases": ["84006ec4"] }
+    "3a026a7c": { "sig": "hr(57,7106,INPUT)", "nClass": "Eb", "sts": 20759, "aliases": ["84006ec4"] },
+    "d8a33f35": { "sig": "hs(18,2147,INPUT)", "nClass": "yn", "sts": 20760, "aliases": ["f1cf8a93"] }
   }
 }
