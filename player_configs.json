@@ -396,6 +396,7 @@
     "8b2685e5": { "sig": "ZB(3,3345,INPUT)", "nClass": "Jv", "sts": 20767, "aliases": ["e28c829a","d19f44f5"] },
     "fad7e4e9": { "sig": "hj(67,3409,INPUT)", "nClass": "io", "sts": 20767, "aliases": ["b1dea243"] },
     "b495249e": { "sig": "Wj(40,483,INPUT)", "nClass": "gl", "sts": 20768, "aliases": ["8bf004e9","830396cb","118ddb4b","ad8d59ae"] },
-    "3c73c103": { "sig": "Iq(2,5430,INPUT)", "nClass": "NK", "sts": 20769, "aliases": ["e414d36f"] }
+    "3c73c103": { "sig": "Iq(2,5430,INPUT)", "nClass": "NK", "sts": 20769, "aliases": ["e414d36f"] },
+    "0bed3ccd": { "sig": "md(5,5087,INPUT)", "nClass": "ld", "sts": 20770, "aliases": ["b91c2e34"] }
   }
 }
