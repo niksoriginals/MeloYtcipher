@@ -403,6 +403,7 @@
     "983e9c18": { "sig": "Yx(33,6730,INPUT)", "nClass": "Xx", "sts": 20773, "aliases": ["dc604f01"] },
     "c310a3b4": { "sig": "BH(34,6729,INPUT)", "nClass": "ce", "sts": 20773, "aliases": ["dafc92c2"] },
     "4d18aae2": { "sig": "xl(19,3722,INPUT)", "nClass": "uk", "sts": 20774, "aliases": ["b09c8027"] },
-    "b3284821": { "sig": "im(19,3722,INPUT)", "nClass": "hm", "sts": 20774, "aliases": ["93447176"] }
+    "b3284821": { "sig": "im(19,3722,INPUT)", "nClass": "hm", "sts": 20774, "aliases": ["93447176","6b3d0364"] },
+    "7425d04e": { "sig": "wc(1,1727,INPUT)", "nClass": "uc", "sts": 20775, "aliases": ["8e0eb251"] }
   }
 }
