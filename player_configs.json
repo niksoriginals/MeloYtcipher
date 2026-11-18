@@ -401,6 +401,7 @@
     "b559f50c": { "sig": "Go(5,5087,INPUT)", "nClass": "Rs", "sts": 20770, "aliases": ["cd1bd289"] },
     "248d5afd": { "sig": "Uj(33,6730,INPUT)", "nClass": "Tj", "sts": 20773, "aliases": ["8c82c301"] },
     "983e9c18": { "sig": "Yx(33,6730,INPUT)", "nClass": "Xx", "sts": 20773, "aliases": ["dc604f01"] },
-    "c310a3b4": { "sig": "BH(34,6729,INPUT)", "nClass": "ce", "sts": 20773, "aliases": ["dafc92c2"] }
+    "c310a3b4": { "sig": "BH(34,6729,INPUT)", "nClass": "ce", "sts": 20773, "aliases": ["dafc92c2"] },
+    "4d18aae2": { "sig": "xl(19,3722,INPUT)", "nClass": "uk", "sts": 20774, "aliases": ["b09c8027"] }
   }
 }
