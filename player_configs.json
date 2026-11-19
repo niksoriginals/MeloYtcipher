@@ -404,6 +404,7 @@
     "c310a3b4": { "sig": "BH(34,6729,INPUT)", "nClass": "ce", "sts": 20773, "aliases": ["dafc92c2"] },
     "4d18aae2": { "sig": "xl(19,3722,INPUT)", "nClass": "uk", "sts": 20774, "aliases": ["b09c8027"] },
     "b3284821": { "sig": "im(19,3722,INPUT)", "nClass": "hm", "sts": 20774, "aliases": ["93447176","6b3d0364"] },
+    "4c14cf00": { "sig": "md(2,1724,INPUT)", "nClass": "ld", "sts": 20775, "aliases": ["141159e5"] },
     "7425d04e": { "sig": "wc(1,1727,INPUT)", "nClass": "uc", "sts": 20775, "aliases": ["8e0eb251"] }
   }
 }
