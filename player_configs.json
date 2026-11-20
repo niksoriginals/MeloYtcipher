@@ -407,6 +407,7 @@
     "4c14cf00": { "sig": "md(2,1724,INPUT)", "nClass": "ld", "sts": 20775, "aliases": ["141159e5"] },
     "7425d04e": { "sig": "wc(1,1727,INPUT)", "nClass": "uc", "sts": 20775, "aliases": ["8e0eb251"] },
     "7f755914": { "sig": "Hp(1,1727,INPUT)", "nClass": "Cp", "sts": 20775, "aliases": ["1c0134a8"] },
-    "4a6dfefc": { "sig": "Vx(49,8822,INPUT)", "nClass": "OC", "sts": 20776, "aliases": ["39082609"] }
+    "4a6dfefc": { "sig": "Vx(49,8822,INPUT)", "nClass": "OC", "sts": 20776, "aliases": ["39082609"] },
+    "afdf03ae": { "sig": "Ab(49,8822,INPUT)", "nClass": "zb", "sts": 20776, "aliases": ["e10989d8"] }
   }
 }
