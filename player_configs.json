@@ -411,6 +411,8 @@
     "afdf03ae": { "sig": "Ab(49,8822,INPUT)", "nClass": "zb", "sts": 20776, "aliases": ["e10989d8"] },
     "024de84d": { "sig": "Mc(43,6537,INPUT)", "nClass": "Kc", "sts": 20777, "aliases": ["c55200ef"] },
     "05a4ffc0": { "sig": "JKa(3,7911,INPUT)", "nClass": "BB", "sts": 20779, "aliases": ["4eda39fe"] },
+    "b485e332": { "sig": "Yo(2,7910,INPUT)", "nClass": "Xo", "sts": 20779, "aliases": ["fe40e19e"] },
+    "4ee2dbc0": { "sig": "RA(18,7746,INPUT)", "nClass": "ed", "sts": 20780, "aliases": ["6710872b"] },
     "b17b74e6": { "sig": "Ic(2,7762,INPUT)", "nClass": "aq", "sts": 20780, "aliases": ["e2bbe1e1"] }
   }
 }
