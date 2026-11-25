@@ -414,6 +414,7 @@
     "b485e332": { "sig": "Yo(2,7910,INPUT)", "nClass": "Xo", "sts": 20779, "aliases": ["fe40e19e"] },
     "4ee2dbc0": { "sig": "RA(18,7746,INPUT)", "nClass": "ed", "sts": 20780, "aliases": ["6710872b"] },
     "b17b74e6": { "sig": "Ic(2,7762,INPUT)", "nClass": "aq", "sts": 20780, "aliases": ["e2bbe1e1"] },
-    "e39dbbc8": { "sig": "Wq(2,7762,INPUT)", "nClass": "Lq", "sts": 20780, "aliases": ["36be8478"] }
+    "e39dbbc8": { "sig": "Wq(2,7762,INPUT)", "nClass": "Lq", "sts": 20780, "aliases": ["36be8478"] },
+    "ffd0c196": { "sig": "dn(18,7746,INPUT)", "nClass": "Bp", "sts": 20780, "aliases": ["32befa38"] }
   }
 }
